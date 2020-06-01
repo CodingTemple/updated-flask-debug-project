@@ -1,1 +1,20 @@
-<h1>Hello World</h1>
+{% extends 'base.html' %}
+
+{% block content %}
+
+<header class="banner">
+    <h1 class="header-text">This is a blog during a pandemic situation...</h1>
+</header>
+
+<h3>{{ customer_name }} </h3>
+<p>{{ order_number }}</p>
+
+{% for key,item in item_dict.items() %}
+    <ul>
+        {% if item == 'Bread' %}
+        <li>{{ key }} {{ item }}</li>
+        {% endif %}
+    </ul>
+{% endfor %}
+
+{% endblock content %}

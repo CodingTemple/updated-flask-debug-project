@@ -6,19 +6,19 @@ Each day and session will be updated here based on the code we created during th
 
 ---
 
-Day 1 Morning Code
+Day 1 Afternoon Code
 
 Creation of project structure using python package for Flask
 
 - `__init__.py`
-    - Flask app variable
-    - Flask config created
+    - **same as day 1 - morning**
 - `app.py`
-    - app.run to run the project
+    - **same as day 1 - morning**
 - `config.py`
-    - os module used to inform python of the operating system being used
-    - Config object created
+    - **same as day 1 - morning**
 - `routes.py`
-    - Home route created with home.html
+    - Added new route for register
 - `templates`
-    - home.html file created 
+    - home.html file created
+    - added routes for nav.html
+    - added register.html
