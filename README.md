@@ -6,7 +6,7 @@ Each day and session will be updated here based on the code we created during th
 
 ---
 
-Day 2 Morning Code
+Day 2 Afternoon Code
 
 Creation of project structure using python package for Flask
 
@@ -15,7 +15,7 @@ Creation of project structure using python package for Flask
 - `app.py`
     - **same as day 1 - morning**
 - `config.py`
-    - **same as day 1 - morning**
+    - Adding new configuration for SQLAlchemy
 - `routes.py`
     - Added new route for register
 - `templates`
@@ -23,4 +23,7 @@ Creation of project structure using python package for Flask
     - Added form to `register.html`
 
 - `forms.py`
-    - Added new form for `UserInputForm`
+    - **Same as day2 morning**
+
+- `models.py`
+    - Adding database models for User and Post
