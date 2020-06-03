@@ -1,8 +1,12 @@
-from may_blog import app
+from may_blog import app, db, Message, mail
 from flask import render_template, request
 
 # Import for Forms
 from may_blog.forms import UserInfoForm, PostForm
+
+# Import for Models
+from may_blog.models import User, Post
+
 
 # Home Route
 @app.route('/')
@@ -22,6 +26,19 @@ def register():
         password = form.password.data
         email = form.email.data
         print("\n",username,password,email)
+        # Create an instance of User
+        user = User(username,email,password)
+        # Open and insert into database
+        db.session.add(user)
+        # Save info into database
+        db.session.commit()
+
+        # Flask Email Sender 
+        msg = Message(f'Thanks for Signing Up! {email}', recipients=email)
+        msg.body = ('Congrats on signing up! Looking forward to your posts!')
+        msg.html = ('<h1> Welcome to May_Blog!</h1>' '<p> This will be fun! </p>')
+
+        mail.send(msg)
     return render_template('register.html',form = form)
 
 # Post Submission Route
