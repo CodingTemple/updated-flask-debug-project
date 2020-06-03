@@ -9,6 +9,8 @@
 <h3>{{ customer_name }} </h3>
 <p>{{ order_number }}</p>
 
+<h2>Hello there {{ current_user.username }}</h2>
+
 {% for key,item in item_dict.items() %}
     <ul>
         {% if item == 'Bread' %}

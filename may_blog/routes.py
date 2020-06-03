@@ -1,12 +1,14 @@
 from may_blog import app, db, Message, mail
-from flask import render_template, request
+from flask import render_template, request, redirect, url_for
 
 # Import for Forms
-from may_blog.forms import UserInfoForm, PostForm
+from may_blog.forms import UserInfoForm, PostForm, LoginForm
 
 # Import for Models
-from may_blog.models import User, Post
+from may_blog.models import User, Post, check_password_hash
 
+# Import for Flask Login - login_required, login_user,current_user, logout_user
+from flask_login import login_required,login_user, current_user,logout_user
 
 # Home Route
 @app.route('/')
@@ -34,7 +36,7 @@ def register():
         db.session.commit()
 
         # Flask Email Sender 
-        msg = Message(f'Thanks for Signing Up! {email}', recipients=email)
+        msg = Message(f'Thanks for Signing Up! {email}', recipients=[email])
         msg.body = ('Congrats on signing up! Looking forward to your posts!')
         msg.html = ('<h1> Welcome to May_Blog!</h1>' '<p> This will be fun! </p>')
 
@@ -43,6 +45,7 @@ def register():
 
 # Post Submission Route
 @app.route('/posts', methods=['GET','POST'])
+@login_required
 def posts():
     post = PostForm()
     if request.method == 'POST' and post.validate():
@@ -50,3 +53,26 @@ def posts():
         content = post.content.data
         print('\n',title,content)
     return render_template('posts.html', post = post)
+
+
+# Login Form Route
+@app.route('/login', methods = ['GET','POST'])
+def login():
+    form = LoginForm()
+    if request.method == 'POST' and form.validate():
+        email = form.email.data
+        password = form.password.data
+        logged_user = User.query.filter(User.email == email).first()
+        if logged_user and check_password_hash(logged_user.password, password):
+            login_user(logged_user)
+            return redirect(url_for('home'))
+        else:
+            return redirect(url_for('login'))
+
+    return render_template('login.html',form = form)
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('home'))

@@ -1,4 +1,4 @@
-from may_blog import app, db
+from may_blog import app, db, login
 
 # Import for Werkzeug Security
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -6,7 +6,16 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # Import for Date Time Module
 from datetime import datetime
 
-class User(db.Model):
+#Imports for Login manager and User Mixin
+from flask_login import UserMixin
+
+# Create the current user_manager using the user_login function
+# Which is a decorator (used in this case as callback function)
+@login.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+class User(db.Model,UserMixin):
     id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String(150), nullable = False, unique = True)
     email = db.Column(db.String(150), nullable = False, unique = True)
