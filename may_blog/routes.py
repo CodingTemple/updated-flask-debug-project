@@ -13,10 +13,8 @@ from flask_login import login_required,login_user, current_user,logout_user
 # Home Route
 @app.route('/')
 def home():
-    customer_name = "Joel"
-    order_number = 1
-    item_dict = {1:"Ice Cream", 2:"Bread", 3:"Lemons",4:"Cereal"}
-    return render_template("home.html", customer_name = customer_name, order_number = order_number, item_dict = item_dict)
+    posts = Post.query.all()
+    return render_template("home.html", posts = posts)
 
 # Register Route
 @app.route('/register', methods=['GET','POST'])
@@ -51,9 +49,51 @@ def posts():
     if request.method == 'POST' and post.validate():
         title = post.title.data
         content = post.content.data
+        user_id = current_user.id
         print('\n',title,content)
+        post = Post(title,content,user_id)
+
+        db.session.add(post)
+
+        db.session.commit()
+        return redirect(url_for('posts'))
     return render_template('posts.html', post = post)
 
+@app.route('/posts/<int:post_id>')
+@login_required
+def post_detail(post_id):
+    post = Post.query.get_or_404(post_id)
+    return render_template('post_detail.html', post = post)
+
+
+@app.route('/posts/update/<int:post_id>', methods = ['GET', 'POST'])
+@login_required
+def post_update(post_id):
+    post = Post.query.get_or_404(post_id)
+    update_form = PostForm()
+
+    if request.method == 'POST' and update_form.validate():
+        title = update_form.title.data
+        content = update_form.content.data
+        user_id = current_user.id
+        print(title,content,user_id)
+
+        # Update will get added to the DB
+        post.title = title
+        post.content = content
+        post.user_id = user_id
+
+        db.session.commit()
+        return redirect(url_for('post_update', post_id = post.id))
+    return render_template('post_update.html', update_form = update_form)
+
+@app.route('/posts/delete/<int:post_id>', methods=['POST'])
+@login_required
+def post_delete(post_id):
+    post = Post.query.get_or_404(post_id)
+    db.session.delete(post)
+    db.session.commit()
+    return redirect(url_for('home'))
 
 # Login Form Route
 @app.route('/login', methods = ['GET','POST'])
@@ -73,6 +113,7 @@ def login():
 
 
 @app.route('/logout')
+@login_required
 def logout():
     logout_user()
     return redirect(url_for('home'))
