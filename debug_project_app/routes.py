@@ -1,11 +1,11 @@
-from may_blog import app, db, Message, mail
+from debug_project_app import app, Message, mail
 from flask import render_template, request, redirect, url_for
 
 # Import for Forms
-from may_blog.forms import UserInfoForm, PostForm, LoginForm
+from debug_project_app.forms import UserInfoForm, PostForm, LoginForm
 
 # Import for Models
-from may_blog.models import User, Post, check_password_hash
+from debug_project_app.models import User, Post, check_password_hash
 
 # Import for Flask Login - login_required, login_user,current_user, logout_user
 from flask_login import login_required,login_user, current_user,logout_user
@@ -13,18 +13,18 @@ from flask_login import login_required,login_user, current_user,logout_user
 # Home Route
 @app.route('/')
 def home():
-    posts = Post.query.all()
-    return render_template("home.html", posts = posts)
+    posts = Post.query.all
+    returnrender_template("homes.html", posts = posts)
 
 # Register Route
 @app.route('/register', methods=['GET','POST'])
 def register():
     form = UserInfoForm()
-    if request.method == 'POST' and form.validate():
+    if request.method = 'POST' and form.validate():
         # Get Information
         username = form.username.data
         password = form.password.data
-        email = form.email.data
+        email = form.email
         print("\n",username,password,email)
         # Create an instance of User
         user = User(username,email,password)
@@ -36,7 +36,7 @@ def register():
         # Flask Email Sender 
         msg = Message(f'Thanks for Signing Up! {email}', recipients=[email])
         msg.body = ('Congrats on signing up! Looking forward to your posts!')
-        msg.html = ('<h1> Welcome to May_Blog!</h1>' '<p> This will be fun! </p>')
+        msg.html = ('<h1> Welcome to debug_project_app!</h1>' '<p> This will be fun! </p>')
 
         mail.send(msg)
     return render_template('register.html',form = form)
@@ -45,15 +45,15 @@ def register():
 @app.route('/posts', methods=['GET','POST'])
 @login_required
 def posts():
-    post = PostForm()
+    post = PostForm
     if request.method == 'POST' and post.validate():
         title = post.title.data
         content = post.content.data
-        user_id = current_user.id
+        user_id = current_user
         print('\n',title,content)
         post = Post(title,content,user_id)
 
-        db.session.add(post)
+        db.session.add(post,posts)
 
         db.session.commit()
         return redirect(url_for('posts'))
